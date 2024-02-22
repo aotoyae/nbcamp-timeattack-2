@@ -1,14 +1,29 @@
 import React from "react";
 import commentsAxios from "../axios/comments";
 import postsAxios from "../axios/posts";
+import { useNavigate } from "react-router-dom";
 
 const TestPage = () => {
+  const isLogin = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
   const [posts, setPosts] = React.useState([]);
   const [comments, setComments] = React.useState([]);
 
-  const handleGetPostButtonClick = async () => {};
+  const handleGetPostButtonClick = async () => {
+    const { data } = await postsAxios.get();
+    setPosts(data);
+  };
 
-  const handleGetCommentsButtonClick = async () => {};
+  const handleGetCommentsButtonClick = async () => {
+    if (isLogin) {
+      const { data } = await commentsAxios.get();
+      console.log(data);
+      // setComments(data);
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/");
+    }
+  };
 
   return (
     <div>
@@ -22,7 +37,11 @@ const TestPage = () => {
       </button>
 
       {posts?.map((post) => (
-        <></>
+        <div>
+          <p>
+            {post.id} : {post.title}
+          </p>
+        </div>
       ))}
 
       {comments?.map((comment) => (

@@ -13,15 +13,42 @@ const LoginPage = () => {
       <h1>Login</h1>
       <p>Login page</p>
 
-      <form onSubmit={async (e) => {}}>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+
+          try {
+            const { data } = await authApi.post(`/login`, {
+              id,
+              password,
+            });
+            const { accessToken, userId, nickname } = data;
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("nickname", nickname);
+            navigate("/");
+          } catch (error) {
+            alert(error.response.data.message);
+            console.log(error);
+          }
+        }}
+      >
         <div>
           <label htmlFor="id">id</label>
-          <input />
+          <input
+            type="text"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+          />
         </div>
 
         <div>
           <label htmlFor="password">Password</label>
-          <input />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
 
         <button type="submit">Login</button>
