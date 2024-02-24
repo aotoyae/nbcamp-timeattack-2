@@ -10,18 +10,29 @@ const TestPage = () => {
   const [comments, setComments] = React.useState([]);
 
   const handleGetPostButtonClick = async () => {
-    const { data } = await postsAxios.get();
-    setPosts(data);
+    try {
+      const { data } = await postsAxios.get();
+      setPosts(data);
+      setComments([]);
+    } catch (error) {
+      console.log(error);
+      alert("포스팅 가져오는 도중 에러가 발생했습니다.");
+    }
   };
 
   const handleGetCommentsButtonClick = async () => {
-    if (isLogin) {
-      const { data } = await commentsAxios.get();
-      console.log(data);
-      // setComments(data);
-    } else {
-      alert("로그인이 필요합니다.");
-      navigate("/");
+    try {
+      if (isLogin) {
+        const { data } = await commentsAxios.get();
+        setPosts([]);
+        setComments(data);
+      } else {
+        alert("로그인이 필요합니다.");
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("코멘트 가져오는 도중 에러가 발생했습니다.");
     }
   };
 
@@ -37,7 +48,7 @@ const TestPage = () => {
       </button>
 
       {posts?.map((post) => (
-        <div>
+        <div key={post.id}>
           <p>
             {post.id} : {post.title}
           </p>
@@ -45,7 +56,9 @@ const TestPage = () => {
       ))}
 
       {comments?.map((comment) => (
-        <></>
+        <div key={comment.id}>
+          <p>{comment.body}</p>
+        </div>
       ))}
     </div>
   );

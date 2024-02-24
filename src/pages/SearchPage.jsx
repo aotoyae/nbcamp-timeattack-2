@@ -2,19 +2,33 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import postsAxios from "../axios/posts";
+import axios from "axios";
 
 function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [posts, setPosts] = useState([]);
 
-  const userId = null;
+  const userId = searchParams.get("userId");
 
   // URL의 쿼리 스트링을 변경하는 함수
-  const updateSearch = (userId) => {};
+  const updateSearch = (userId) => {
+    setSearchParams({ userId });
+  };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // postsAxios.get("").then
+    const getPosts = async () => {
+      const { data } = await postsAxios.get();
+      console.log(data);
 
-  const filteredPosts = null;
+      setPosts(data);
+    };
+    getPosts();
+  }, []);
+
+  const filteredPosts = posts.filter(
+    (post) => post.writerUserId === Number(userId)
+  );
 
   return (
     <div>
@@ -30,7 +44,7 @@ function SearchPage() {
       <button onClick={() => updateSearch("1")}>1번유저의 글 보기</button>
       <button onClick={() => updateSearch("2")}>2번유저의 글 보기</button>
 
-      {filteredPosts.map((post) => (
+      {filteredPosts?.map((post) => (
         <div key={post.id}>
           <h2>{post.title}</h2>
           <p>{post.author}</p>

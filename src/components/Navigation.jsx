@@ -13,6 +13,7 @@ const Navigation = () => {
           onClick={() => {
             localStorage.clear();
             navigate("/");
+            // home 에서 로그아웃 할 시 닉네임이 안사라짐
           }}
         >
           로그아웃
